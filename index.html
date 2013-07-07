@@ -4,18 +4,20 @@
     <meta charset="utf-8">
     <title>TODO List</title>
     <meta name="description" content="Simple todo list">
-    <!-- Links to external scripts -->
+    <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
     <div id="todo"></div>
-    <script type="text/template" id="item-template">
+    <script type="text/template" id="itemTemplate">
       <div>
-        <input id="todoItem" type="checkbox" <%= completed ? 'checked="checked"' : '' %>>
-        <%- title %>
+        <input type="checkbox" class="todoItem" <%= completed ? 'checked="checked"' : '' %>>
+        <label><%- title %></label>
+        <input type="text" class="edit hide" value="<%= title %>">
       </div>
     </script>
     <script type="text/javascript" src="js/vendor/jquery.js"></script>
     <script type="text/javascript" src="js/vendor/underscore.js"></script>
     <script type="text/javascript" src="js/vendor/backbone.js"></script>
+    <script type="text/javascript" src="js/todo.js"></script>
   </body>
 </html>

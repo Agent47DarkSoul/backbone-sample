@@ -3,7 +3,16 @@ var Todo = Backbone.Model.extend({
   defaults: {
     title: '',
     completed: false
-  }
+  },
+
+  // Validates the model
+  validate: function (attributes) {
+    console.log("Validating: ", attributes);
+
+    if(!attributes.title) {
+      return "Title can't be blank";
+    }
+  },
 });
 
 var todo = new Todo({
@@ -27,16 +36,26 @@ var TodoView = Backbone.View.extend({
 
   events: {
     'dblclick label': 'edit',
-    'keypress .edit': 'updateOnEnter',
-    'blur .edit': 'close'
+    'keydown .edit': 'updateOnEnter',
+    'blur .edit': 'close',
+    'change .completed': 'taskCompleted'
   },
 
   // Called when the view is first created
   initialize: function () {
     // The main element for this view?
-    this.$el = $("#todo");
+    var _view = this;
+
+    // this.$el = $("#todo");
+    this.model.on('change', function () {
+      console.log("Model value changed");
+    }).on('change:completed', function () {
+      _view.input.siblings('.completed').attr("checked", "true");
+      console.log("Completed changed!");
+    });
   },
 
+  // Render the view
   render: function () {
     var todoItem = this.todoTmpl(this.model.toJSON());
     
@@ -46,6 +65,7 @@ var TodoView = Backbone.View.extend({
     return this;
   },
 
+  // Edit the title
   edit: function () {
     this.input
       .removeClass("hide")
@@ -55,22 +75,35 @@ var TodoView = Backbone.View.extend({
     console.log("Edit Todo!");
   },
 
+  // Update the title on enter
   updateOnEnter: function (event) {
-    window.keypresssevent = event;
+    var ENTER_KEY = 13;
 
-    console.log("Update on enter!");
+    if(event.keyCode === ENTER_KEY) {
+      console.log("Updated!");
+      this.trigger('close');
+    }
   },
 
-  close: function () {
+  // Close editing mode of title
+  close: function (event) {
     this.input
       .addClass("hide")
       .prev("label").show();
     
-    console.log("Close!");
+    console.log("Close!", event);
+    event.stopPropagation();
+  },
+
+  // Check off the task from list
+  taskCompleted: function () {
+    this.input.prev('label').toggleClass('disabled');
+    console.log("Task completed!", this);
   }
 });
 
 var todoView = new TodoView({ model: todo });
+todoView.render();
 
 // Cant understand the mapping between a model and a view
 // More specifically, cant understand the cardinality between them
@@ -84,3 +117,76 @@ var todoView = new TodoView({ model: todo });
 // MODEL => MODEL
 // VIEW => TEMPLATE
 // CONTROLLER => VIEW
+
+var TodoCollection = Backbone.Collection.extend({
+  model: Todo
+});
+
+var todoList = new TodoCollection([
+  { id: 1, title: "More javascript", completed: false, },
+  { id: 2, title: "JavaScript Ninja Objects", completed: true },
+  { id: 3, title: "Backbone Applications", completed: false }
+]).on("add", function (todo) {
+  console.log("Added Todo: ", todo.get('title'),
+    " Completed: ", todo.get('completed'));
+}).on("change:completed", function (todo) {
+  console.log("Completed: ", todo.get('title'));
+}).on("remove", function (todo) {
+  console.log("Removed Todo: ", todo.get('title'),
+    " Completed: ", todo.get('completed'));
+})
+
+console.log("Todo List: ", todoList.length);
+
+// Update the complete collection all at once
+// If no title is given, title is set to empty string
+// todoList.set([
+//   { id: 1, completed: true},
+//   { id: 3, title: "Backbone Applications", completed: true}
+// ]);
+
+// Reset the whole collection
+// No callbacks are invoked
+// todoList.reset();
+
+// DO I NEED A VIEW FOR THIS COLLECTION? => YES
+// DO I NEED A TEMPLATE FOR THIS COLLECTION => ???
+
+// View:
+//  a. el,
+//  b. events
+//  c. render
+var TodoListView = Backbone.View.extend({
+  tagName: 'div',
+
+  events: {
+    // No events for now
+  },
+
+  initialize: function () {
+    this.template = _.template($("#listTemplate").html());
+
+    // Binding => Yes
+    // When the collection changes, render the view
+    // this.bind("change", this.render);
+
+  },
+
+  render: function () {
+    var todoList,
+        todoListItems = this.collection;
+        view = this.$el.html(this.template({})).find('#todoList');
+
+    todoListItems.forEach(function (todoItem) {
+      // For each item create the view
+      var todoView = new TodoView({ model: todoItem });
+      // Append the view to the main div
+      view.append(todoView.render().el);
+    });
+
+    return this;
+  }
+});
+
+var todoListView = new TodoListView({ collection: todoList });
+$("body").append(todoListView.render().el);

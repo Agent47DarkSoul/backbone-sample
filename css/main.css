@@ -1,3 +1,21 @@
+#todoList {
+    padding-left: 0px;
+}
+
+#todoList li {
+    list-style: none;
+    padding: 10px 2px;
+}
+
+#todoList li:hover {
+    background-color: #CDCDCD;
+}
+
 .hide {
   display: none;
+}
+
+.disabled {
+  color: #666;
+  text-decoration: line-through;
 }

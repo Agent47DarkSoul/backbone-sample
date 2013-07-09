@@ -15,8 +15,8 @@
     </script>
     <script type="text/template" id="itemTemplate">
       <div>
-        <input type="checkbox" class="completed" <%= completed ? 'checked="checked"' : '' %>>
-        <label class="title"><%- title %></label>
+        <input type="checkbox" class="status" <%= completed ? 'checked="checked"' : '' %>>
+        <label class="title <%= completed ? 'completed' : '' %>"><%- title %></label>
         <input type="text" class="edit hide" value="<%= title %>">
       </div>
     </script>

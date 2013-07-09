@@ -38,7 +38,7 @@ var TodoView = Backbone.View.extend({
     'dblclick label': 'edit',
     'keydown .edit': 'updateOnEnter',
     'blur .edit': 'close',
-    'change .completed': 'taskCompleted'
+    'change .status': 'taskCompleted'
   },
 
   // Called when the view is first created
@@ -50,7 +50,7 @@ var TodoView = Backbone.View.extend({
     this.model.on('change', function () {
       console.log("Model value changed");
     }).on('change:completed', function () {
-      _view.input.siblings('.completed').attr("checked", "true");
+      _view.input.siblings('.status').attr("checked", "true");
       console.log("Completed changed!");
     });
   },
@@ -97,7 +97,7 @@ var TodoView = Backbone.View.extend({
 
   // Check off the task from list
   taskCompleted: function () {
-    this.input.prev('label').toggleClass('disabled');
+    this.input.prev('label').toggleClass('completed');
     console.log("Task completed!", this);
   }
 });

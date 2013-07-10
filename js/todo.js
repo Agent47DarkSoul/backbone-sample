@@ -48,10 +48,8 @@ var TodoView = Backbone.View.extend({
 
     // this.$el = $("#todo");
     this.model.on('change', function () {
-      console.log("Model value changed");
-    }).on('change:completed', function () {
-      _view.input.siblings('.status').attr("checked", "true");
-      console.log("Completed changed!");
+      _view.render();
+      console.log("Model changed");
     });
   },
 
@@ -80,13 +78,14 @@ var TodoView = Backbone.View.extend({
     var ENTER_KEY = 13;
 
     if(event.keyCode === ENTER_KEY) {
-      console.log("Updated!");
-      this.trigger('close');
+      this.model.set({ title: this.input.val() });
+      console.log("Updated!", this.model);
+      this.close(event);
     }
   },
 
   // Close editing mode of title
-  close: function (event) {
+  close: function () {
     this.input
       .addClass("hide")
       .prev("label").show();
@@ -97,13 +96,13 @@ var TodoView = Backbone.View.extend({
 
   // Check off the task from list
   taskCompleted: function () {
-    this.input.prev('label').toggleClass('completed');
+    this.model.set({ completed: this.$('.status')[0].checked });
     console.log("Task completed!", this);
   }
 });
 
 var todoView = new TodoView({ model: todo });
-todoView.render();
+// $("#todo").append(todoView.render().el);
 
 // Cant understand the mapping between a model and a view
 // More specifically, cant understand the cardinality between them
@@ -123,9 +122,9 @@ var TodoCollection = Backbone.Collection.extend({
 });
 
 var todoList = new TodoCollection([
-  { id: 1, title: "More javascript", completed: false, },
-  { id: 2, title: "JavaScript Ninja Objects", completed: true },
-  { id: 3, title: "Backbone Applications", completed: false }
+  { id: 1, title: "Single Model and View", completed: true, },
+  { id: 2, title: "Collection of model", completed: true },
+  { id: 3, title: "Fix problem in update event", completed: true }
 ]).on("add", function (todo) {
   console.log("Added Todo: ", todo.get('title'),
     " Completed: ", todo.get('completed'));

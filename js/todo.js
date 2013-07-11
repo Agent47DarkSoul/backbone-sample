@@ -75,12 +75,19 @@ var TodoView = Backbone.View.extend({
 
   // Update the title on enter
   updateOnEnter: function (event) {
-    var ENTER_KEY = 13;
+    var ENTER_KEY = 13, message = false;
 
-    if(event.keyCode === ENTER_KEY) {
-      this.model.set({ title: this.input.val() });
+    if(event.keyCode !== ENTER_KEY) return;
+
+    message = this.model.set({
+      title: this.input.val()
+    }, { validate: true });
+
+    if(message) {  
       console.log("Updated!", this.model);
       this.close(event);
+    } else {
+      console.log("Error: ", this.model);
     }
   },
 
@@ -96,7 +103,9 @@ var TodoView = Backbone.View.extend({
 
   // Check off the task from list
   taskCompleted: function () {
-    this.model.set({ completed: this.$('.status')[0].checked });
+    this.model.set({ 
+      completed: this.$('.status')[0].checked
+    });
     console.log("Task completed!", this);
   }
 });

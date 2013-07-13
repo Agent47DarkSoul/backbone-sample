@@ -15,25 +15,22 @@ var Todo = Backbone.Model.extend({
   },
 });
 
-var todo = new Todo({
-  title: "Try out the model and its attributes in console log."
-});
-
 // Each todo item will be rendered on the page using
 // a todo view
 
 // Create a Todo view
 // 
 // Properties:
-//  a. tagName
-//  b. events
-//  c. initialize
-//  d. render
+//  a. tagName => the element which will be represented by el
+//  b. events => events on DOM elements
+//  c. initialize => initialize a view
+//  d. render => render a view
 var TodoView = Backbone.View.extend({
   tagName: 'li',
 
   todoTmpl: _.template($('#itemTemplate').html()),
 
+  // DOM events
   events: {
     'dblclick label': 'edit',
     'keydown .edit': 'updateOnEnter',
@@ -43,14 +40,9 @@ var TodoView = Backbone.View.extend({
 
   // Called when the view is first created
   initialize: function () {
-    // The main element for this view?
-    var _view = this;
-
-    // this.$el = $("#todo");
-    this.model.on('change', function () {
-      _view.render();
-      console.log("Model changed");
-    });
+    // When the model changes render the view
+    _.bindAll(this, 'render');
+    this.model.bind('change', this.render);
   },
 
   // Render the view
@@ -83,9 +75,11 @@ var TodoView = Backbone.View.extend({
       title: this.input.val()
     }, { validate: true });
 
-    if(message) {  
-      console.log("Updated!", this.model);
+    if(message && this.model.hasChanged()) return;
+
+    if(message) {
       this.close(event);
+      console.log("Not updated: ", this.model);
     } else {
       console.log("Error: ", this.model);
     }
@@ -93,9 +87,7 @@ var TodoView = Backbone.View.extend({
 
   // Close editing mode of title
   close: function () {
-    this.input
-      .addClass("hide")
-      .prev("label").show();
+    this.render();
     
     console.log("Close!", event);
     event.stopPropagation();
@@ -109,9 +101,6 @@ var TodoView = Backbone.View.extend({
     console.log("Task completed!", this);
   }
 });
-
-var todoView = new TodoView({ model: todo });
-// $("#todo").append(todoView.render().el);
 
 // Cant understand the mapping between a model and a view
 // More specifically, cant understand the cardinality between them
@@ -127,24 +116,9 @@ var todoView = new TodoView({ model: todo });
 // CONTROLLER => VIEW
 
 var TodoCollection = Backbone.Collection.extend({
-  model: Todo
+  model: Todo,
+  url: "todos.json"
 });
-
-var todoList = new TodoCollection([
-  { id: 1, title: "Single Model and View", completed: true, },
-  { id: 2, title: "Collection of model", completed: true },
-  { id: 3, title: "Fix problem in update event", completed: true }
-]).on("add", function (todo) {
-  console.log("Added Todo: ", todo.get('title'),
-    " Completed: ", todo.get('completed'));
-}).on("change:completed", function (todo) {
-  console.log("Completed: ", todo.get('title'));
-}).on("remove", function (todo) {
-  console.log("Removed Todo: ", todo.get('title'),
-    " Completed: ", todo.get('completed'));
-})
-
-console.log("Todo List: ", todoList.length);
 
 // Update the complete collection all at once
 // If no title is given, title is set to empty string
@@ -158,43 +132,52 @@ console.log("Todo List: ", todoList.length);
 // todoList.reset();
 
 // DO I NEED A VIEW FOR THIS COLLECTION? => YES
-// DO I NEED A TEMPLATE FOR THIS COLLECTION => ???
+// DO I NEED A TEMPLATE FOR THIS COLLECTION => YES
 
 // View:
-//  a. el,
+//  a. tag
 //  b. events
 //  c. render
 var TodoListView = Backbone.View.extend({
   tagName: 'div',
 
   events: {
-    // No events for now
+    // Dont have any interactive DOM elements within my view
   },
 
   initialize: function () {
+    // 'render' method of view will always be called with view as context
+    _.bindAll(this, 'render');
+    // bind 'reset' event of collection to view's render
+    this.collection.bind('reset', this.render);
+
+    // compile template
     this.template = _.template($("#listTemplate").html());
-
-    // Binding => Yes
-    // When the collection changes, render the view
-    // this.bind("change", this.render);
-
   },
 
   render: function () {
-    var todoList,
+    var $list = undefined,
         todoListItems = this.collection;
-        view = this.$el.html(this.template({})).find('#todoList');
+
+    // Insert the template, and find the list ul
+    this.$el.html(this.template({}));
+    $list = this.$('#todoList');
 
     todoListItems.forEach(function (todoItem) {
       // For each item create the view
       var todoView = new TodoView({ model: todoItem });
       // Append the view to the main div
-      view.append(todoView.render().el);
+      $list.append(todoView.render().el);
     });
 
     return this;
   }
 });
 
+var todoList = new TodoCollection();
+console.log("Todo List: ", todoList.length);
+
 var todoListView = new TodoListView({ collection: todoList });
 $("body").append(todoListView.render().el);
+
+todoList.fetch({ reset: true });

@@ -18,7 +18,8 @@ var TodoView = Backbone.View.extend({
     'dblclick label': 'edit',
     'keydown .edit': 'updateOnEnter',
     'blur .edit': 'close',
-    'change .status': 'taskCompleted'
+    'change .status': 'taskCompleted',
+    'click .delete': 'deleteTodo'
   },
 
   // Called when the view is first created
@@ -84,6 +85,11 @@ var TodoView = Backbone.View.extend({
       completed: this.$('.status')[0].checked
     });
     console.log("Task completed!", this);
+  },
+
+  deleteTodo: function () {
+    deletedTodoList.push(this.model.delete());
+    this.$el.remove();
   }
 });
 

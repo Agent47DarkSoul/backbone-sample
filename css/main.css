@@ -11,6 +11,10 @@
     background-color: #CDCDCD;
 }
 
+#todoList li .delete {
+  float: right;
+}
+
 #todoList li .error-message {
   font-size: 12px;
   font-family: Arial;

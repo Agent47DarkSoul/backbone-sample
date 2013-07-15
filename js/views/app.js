@@ -17,3 +17,5 @@ var todoListView = new TodoListView({ collection: todoList });
 $("body").append(todoListView.render().el);
 
 todoList.fetch({ reset: true });
+
+var deletedTodoList = []

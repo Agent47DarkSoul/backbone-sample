@@ -1,20 +1,3 @@
-// Create a Todo model
-var Todo = Backbone.Model.extend({
-  defaults: {
-    title: '',
-    completed: false
-  },
-
-  // Validates the model
-  validate: function (attributes) {
-    console.log("Validating: ", attributes);
-
-    if(!attributes.title) {
-      return "Title can't be blank";
-    }
-  },
-});
-
 // Each todo item will be rendered on the page using
 // a todo view
 
@@ -102,24 +85,6 @@ var TodoView = Backbone.View.extend({
   }
 });
 
-// Cant understand the mapping between a model and a view
-// More specifically, cant understand the cardinality between them
-
-// Mapping:
-//  a. container => view container
-
-
-// DONT THINK IN TERMS OF TRADITIONAL MVC
-
-// MODEL => MODEL
-// VIEW => TEMPLATE
-// CONTROLLER => VIEW
-
-var TodoCollection = Backbone.Collection.extend({
-  model: Todo,
-  url: "todos.json"
-});
-
 // Update the complete collection all at once
 // If no title is given, title is set to empty string
 // todoList.set([
@@ -173,11 +138,3 @@ var TodoListView = Backbone.View.extend({
     return this;
   }
 });
-
-var todoList = new TodoCollection();
-console.log("Todo List: ", todoList.length);
-
-var todoListView = new TodoListView({ collection: todoList });
-$("body").append(todoListView.render().el);
-
-todoList.fetch({ reset: true });

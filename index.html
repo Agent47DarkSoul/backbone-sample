@@ -18,6 +18,7 @@
         <input type="checkbox" class="status" <%= completed ? 'checked="checked"' : '' %>>
         <label class="title <%= completed ? 'completed' : '' %>"><%- title %></label>
         <input type="text" class="edit hide" value="<%= title %>">
+        <span class="error-message"></span>
       </div>
     </script>
     <script type="text/javascript" src="js/vendor/jquery.js"></script>

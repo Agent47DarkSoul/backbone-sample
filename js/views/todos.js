@@ -64,6 +64,8 @@ var TodoView = Backbone.View.extend({
       this.close(event);
       console.log("Not updated: ", this.model);
     } else {
+      this.input.addClass('error');
+      this.$('.error-message').text(this.model.validationError);
       console.log("Error: ", this.model);
     }
   },

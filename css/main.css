@@ -11,6 +11,16 @@
     background-color: #CDCDCD;
 }
 
+#todoList li .error-message {
+  font-size: 12px;
+  font-family: Arial;
+  color: #F00000;
+}
+
+#todoList li input.error {
+  border-color: #D64431;
+}
+
 .hide {
   display: none;
 }
@@ -19,3 +29,4 @@
   color: #666;
   text-decoration: line-through;
 }
+

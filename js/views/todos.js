@@ -115,7 +115,7 @@ var TodoListView = Backbone.View.extend({
   tagName: 'div',
 
   events: {
-    // Dont have any interactive DOM elements within my view
+    'click .create-todo': 'createTodo'
   },
 
   initialize: function () {
@@ -144,5 +144,21 @@ var TodoListView = Backbone.View.extend({
     });
 
     return this;
+  },
+
+  createTodo: function () {
+    // Responsibilities:
+    // a. Create a new todo view
+    // b. Add the new todo to the collection
+
+    var todo = new Todo();
+    this.collection.add(todo);
+
+    var todoView = new TodoView({ model: todo });
+    this.$("#todoList").append(todoView.render().el);
+    // Is this a good way?
+    todoView.edit();
+
+    console.log("New todo created: ", this);
   }
 });

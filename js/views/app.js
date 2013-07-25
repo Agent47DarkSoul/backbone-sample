@@ -10,6 +10,8 @@
 // MODEL => MODEL
 // VIEW => TEMPLATE
 // CONTROLLER => VIEW
+
+
 var todoList = new TodoCollection();
 console.log("Todo List: ", todoList.length);
 
@@ -18,4 +20,7 @@ $("body").append(todoListView.render().el);
 
 todoList.fetch({ reset: true });
 
-var deletedTodoList = []
+var deletedTodoList = [];
+
+// TODO:
+// 1. Add ability to create new todos.

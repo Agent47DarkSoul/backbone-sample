@@ -1,6 +1,7 @@
 var TodoCollection = Backbone.Collection.extend({
   model: Todo,
-  url: "todos.json",
+
+  localStorage: new Backbone.LocalStorage("todo-backbone"),
   
   completed: function () {
     return this.filter(function (todo) {

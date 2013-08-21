@@ -23,4 +23,5 @@ todoList.fetch({ reset: true });
 var deletedTodoList = [];
 
 // TODO:
-// 1. Add ability to create new todos.
+// 1. Add ability to create new todos.=> DONE with buggy validations
+// 2. Store the todos in localStorage => DONE

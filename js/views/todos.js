@@ -55,7 +55,7 @@ var TodoView = Backbone.View.extend({
 
     if(event.keyCode !== ENTER_KEY) return;
 
-    message = this.model.set({
+    message = this.model.save({
       title: this.input.val()
     }, { validate: true });
 
@@ -81,7 +81,7 @@ var TodoView = Backbone.View.extend({
 
   // Check off the task from list
   taskCompleted: function () {
-    this.model.set({ 
+    this.model.save({ 
       completed: this.$('.status')[0].checked
     });
     console.log("Task completed!", this);
@@ -151,7 +151,9 @@ var TodoListView = Backbone.View.extend({
     // a. Create a new todo view
     // b. Add the new todo to the collection
 
-    var todo = new Todo();
+    var todo = new Todo({
+      title: 'new todo', completed: false, id: this.collection.nextId()
+    });
     this.collection.add(todo);
 
     var todoView = new TodoView({ model: todo });

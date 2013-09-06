@@ -1,14 +1,15 @@
 #todoList {
-    padding-left: 0px;
+  padding-left: 0px;
+  width: 40%;
 }
 
 #todoList li {
-    list-style: none;
-    padding: 10px 2px;
+  list-style: none;
+  padding: 10px 2px;
 }
 
 #todoList li:hover {
-    background-color: #CDCDCD;
+  background-color: #CDCDCD;
 }
 
 #todoList li .delete {

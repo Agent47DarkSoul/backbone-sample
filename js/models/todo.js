@@ -12,10 +12,5 @@ var Todo = Backbone.Model.extend({
     if(!attributes.title) {
       return "Title can't be blank";
     }
-  },
-
-  delete: function () {
-    console.log("Deleted model", this);
-    return this;
   }
 });

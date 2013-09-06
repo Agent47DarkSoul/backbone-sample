@@ -88,8 +88,9 @@ var TodoView = Backbone.View.extend({
   },
 
   deleteTodo: function () {
-    deletedTodoList.push(this.model.delete());
-    this.$el.remove();
+    if(this.model.destroy()) {
+      this.$el.remove();
+    }
   }
 });
 
